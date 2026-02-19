@@ -16,7 +16,8 @@ dependencies:
   path: ^1.9.1
   tflite_flutter: ^0.12.1  # On-device ML
   http: ^1.1.0      # For local server calls
-  flame: ^1.10.0    # Animations for mesmerizing UI
+  flame: ^1.18.0    # Animations for mesmerizing UI
+  flame_audio: ^2.0.0  # Optional ambient sounds
   shared_preferences: ^2.2.0  # Simple config
   permission_handler: ^11.0.0  # For mic/camera (with privacy explanations)
   speech_to_text: ^7.3.0     # Voice input

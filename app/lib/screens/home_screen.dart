@@ -1,19 +1,21 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import '../widgets/bloom_orb.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../widgets/bloom_orb_game.dart';
 import '../widgets/simple_bloom_game.dart';
 import '../services/storage_provider.dart';
+import '../providers/bloom_providers.dart';
 import 'journal_screen.dart';
 import 'federation_hub_screen.dart';
 import 'settings_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   static const route = '/home';
   final LinearGradient gradient;
   const HomeScreen({super.key, required this.gradient});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('NexusBloom')),
       body: Stack(
@@ -28,7 +30,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const BloomOrb(health: 0.8, size: 180),
+                BloomOrbFlame(energy: ref.watch(bloomProvider).energy, size: 180),
                 const SizedBox(height: 16),
                 const Text('Tap for insights', style: TextStyle(color: Colors.white70)),
                 const SizedBox(height: 8),

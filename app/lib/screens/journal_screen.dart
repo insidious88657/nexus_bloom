@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import '../services/bloom_ai.dart';
 import '../services/storage_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/bloom_providers.dart';
 
-class JournalScreen extends StatefulWidget {
+class JournalScreen extends ConsumerStatefulWidget {
   static const route = '/journal';
   const JournalScreen({super.key});
 
   @override
-  State<JournalScreen> createState() => _JournalScreenState();
+  ConsumerState<JournalScreen> createState() => _JournalScreenState();
 }
 
-class _JournalScreenState extends State<JournalScreen> {
+class _JournalScreenState extends ConsumerState<JournalScreen> {
   final _controller = TextEditingController();
   final _ai = BloomAI();
   final _store = LocalStorageProvider();
@@ -30,6 +32,8 @@ class _JournalScreenState extends State<JournalScreen> {
         'insight': insight,
       });
       setState(() => _lastInsight = insight);
+      // Update global state too
+      ref.read(bloomProvider.notifier).setInsight(insight);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Saved: $insight')),
