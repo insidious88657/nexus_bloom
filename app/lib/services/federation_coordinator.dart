@@ -45,9 +45,12 @@ class LocalFederationCoordinator implements FederationCoordinator {
     if (decoded is! Map) {
       throw Exception('Invalid model payload');
     }
-    // Coerce values to double
+    final model = decoded['model'];
+    if (model is! Map) {
+      throw Exception('Invalid model field in payload');
+    }
     final result = <String, double>{};
-    decoded.forEach((k, v) {
+    model.forEach((k, v) {
       if (v is num) {
         result[k.toString()] = v.toDouble();
       }

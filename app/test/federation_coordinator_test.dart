@@ -18,11 +18,11 @@ void main() {
     await coord.uploadDelta({'layer1': 0.5});
   });
 
-  test('downloadLatestModel parses doubles', () async {
+  test('downloadLatestModel parses doubles from {model, version}', () async {
     final mock = MockClient((request) async {
       expect(request.url.toString(), 'http://localhost:3000/latest-model');
       expect(request.method, 'GET');
-      return http.Response('{"layer1":0.8,"layer2":2}', 200);
+      return http.Response('{"model":{"layer1":0.8,"layer2":2},"version":5}', 200);
     });
 
     final coord = LocalFederationCoordinator(client: mock);
