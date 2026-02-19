@@ -9,10 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.4.0
   riverpod: ^2.4.0  # State management
   sqflite: ^2.3.0   # Local DB
   path_provider: ^2.1.0
-  tflite_flutter: ^0.10.4  # On-device ML
+  tflite_flutter: ^0.12.1  # On-device ML
   http: ^1.1.0      # For local server calls
   flame: ^1.10.0    # Animations for mesmerizing UI
   shared_preferences: ^2.2.0  # Simple config
@@ -27,3 +28,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/models/bloom_model.tflite
