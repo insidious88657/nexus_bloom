@@ -23,7 +23,15 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => Navigator.pushReplacementNamed(context, HomeScreen.route),
-                child: const Text('Begin'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  backgroundColor: Colors.cyanAccent.withAlpha((0.8 * 255).round()),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                ),
+                child: const Text(
+                  'Awaken Your Bloom',
+                  style: TextStyle(fontSize: 20, color: Colors.black87),
+                ),
               )
             ],
           ),

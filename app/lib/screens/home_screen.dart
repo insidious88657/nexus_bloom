@@ -2,6 +2,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import '../widgets/bloom_orb.dart';
 import '../widgets/simple_bloom_game.dart';
+import '../services/storage_provider.dart';
 import 'journal_screen.dart';
 import 'federation_hub_screen.dart';
 import 'settings_screen.dart';
@@ -30,6 +31,21 @@ class HomeScreen extends StatelessWidget {
                 const BloomOrb(health: 0.8, size: 180),
                 const SizedBox(height: 16),
                 const Text('Tap for insights', style: TextStyle(color: Colors.white70)),
+                const SizedBox(height: 8),
+                FutureBuilder<Map<String, dynamic>?>(
+                  future: LocalStorageProvider().loadBloomData(),
+                  builder: (context, snap) {
+                    if (snap.connectionState != ConnectionState.done) {
+                      return const SizedBox(height: 20);
+                    }
+                    final insight = snap.data != null ? (snap.data!['insight'] as String?) : null;
+                    return Text(
+                      insight ?? 'No insights yet — open Journal to weave one.',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.white70),
+                    );
+                  },
+                ),
                 const SizedBox(height: 24),
                 Wrap(
                   alignment: WrapAlignment.center,
