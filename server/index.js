@@ -1,14 +1,23 @@
+// WARP_PROMPT: Implement a simple Express server for federated learning simulation. Endpoints: POST /upload-delta (receive model delta), GET /latest-model (send aggregated model). Use in-memory storage for dev. Make stateless.
+
 const express = require('express');
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(express.json({ limit: '10mb' })); // For model deltas
 
-app.use(express.json());
+let aggregatedModel = {}; // In-memory sim (abstract to DB later)
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Nexus Bloom Server' });
+app.post('/upload-delta', (req, res) => {
+  const delta = req.body.delta;
+  // Simulate aggregation (e.g., average deltas)
+  Object.keys(delta).forEach(key => {
+    aggregatedModel[key] = (aggregatedModel[key] || 0) + delta[key];
+  });
+  res.status(200).send({ message: 'Delta received' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.get('/latest-model', (req, res) => {
+  res.status(200).json(aggregatedModel);
 });
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server on port ${port}`));
