@@ -2,12 +2,12 @@ services:
   server:
     build: ./server
     ports:
-      - "3000:3000"
+      - "${SERVER_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=development
     volumes:
       - ./server:/app
       - /app/node_modules
-    environment:
-      - NODE_ENV=development
     env_file:
       - ./server/.env
     command: npm run dev
