@@ -1,5 +1,5 @@
 name: nexus_bloom
-description: A Flutter mobile application
+description: AI symbiote - A Flutter mobile application
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -9,8 +9,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.4.0
-  http: ^1.1.0
+  riverpod: ^2.4.0  # State management
+  sqflite: ^2.3.0   # Local DB
+  path_provider: ^2.1.0
+  tflite_flutter: ^0.10.4  # On-device ML
+  http: ^1.1.0      # For local server calls
+  flame: ^1.10.0    # Animations for mesmerizing UI
+  shared_preferences: ^2.2.0  # Simple config
+  permission_handler: ^11.0.0  # For mic/camera (with privacy explanations)
+  speech_to_text: ^6.4.0     # Voice input
+  image_picker: ^1.0.0       # Photos
 
 dev_dependencies:
   flutter_test:
