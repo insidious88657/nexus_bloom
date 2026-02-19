@@ -29,23 +29,37 @@ nexus_bloom/
 ## Getting Started
 
 ### Prerequisites
-- Flutter SDK
-- Docker & Docker Compose
-- Node.js (for local development)
+- Flutter SDK (3.0+)
+- Node.js (18+)
+- Docker & Docker Compose (optional, for containerized deployment)
 
-### Quick Start
+### Quick Start (Development)
 
-1. Make the startup script executable:
+#### Option 1: Simple Development Mode (No Docker)
+
+1. Install server dependencies:
    ```bash
-   chmod +x startup.sh
+   cd server && npm install && cd ..
    ```
 
-2. Run the startup script:
+2. Start the server:
    ```bash
-   ./startup.sh
+   cd server && npm run dev
    ```
 
-3. Start the Flutter app:
+3. In a new terminal, run the Flutter app:
+   ```bash
+   cd app && flutter run
+   ```
+
+#### Option 2: Docker Mode
+
+1. Build and start services:
+   ```bash
+   docker compose up -d
+   ```
+
+2. Run the Flutter app:
    ```bash
    cd app && flutter run
    ```
