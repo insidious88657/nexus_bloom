@@ -1,0 +1,30 @@
+# flutter_launcher_icons configuration
+# Run: flutter pub run flutter_launcher_icons
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+  
+  # Android adaptive icon
+  adaptive_icon_background: "#0A1F3A"
+  adaptive_icon_foreground: "assets/icon_foreground.png"
+  
+  # iOS
+  remove_alpha_ios: true
+  
+  # Web (future)
+  web:
+    generate: false
+  
+  # Windows/macOS/Linux (future)
+  windows:
+    generate: false
+  macos:
+    generate: false
+  linux:
+    generate: false
+
+# NOTE: Create the following assets before running:
+# - assets/icon.png (1024x1024) - Glowing orb on transparent/dark background
+# - assets/icon_foreground.png (432x432) - Orb only, centered, for Android adaptive icon

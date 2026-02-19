@@ -1,0 +1,38 @@
+# flutter_native_splash configuration
+# Run: flutter pub run flutter_native_splash:create
+
+flutter_native_splash:
+  # Dark cosmic background matching app theme
+  color: "#0A1F3A"
+  
+  # Glowing orb splash image
+  image: assets/splash.png
+  
+  # Branding (optional)
+  branding: assets/branding.png
+  branding_mode: bottom
+  
+  # Android 12+ specific
+  android_12:
+    image: assets/splash_android12.png
+    icon_background_color: "#0A1F3A"
+    branding: assets/branding.png
+  
+  # Platform support
+  android: true
+  ios: true
+  web: false
+  
+  # iOS-specific
+  ios_content_mode: center
+  
+  # Fullscreen mode
+  fullscreen: true
+  
+  # Background image (optional layering)
+  # background_image: assets/splash_background.png
+
+# NOTE: Create the following assets before running:
+# - assets/splash.png (1242x2688 for iOS, scales down) - Centered glowing orb on dark bg
+# - assets/splash_android12.png (288x288) - Icon for Android 12+ splash
+# - assets/branding.png (optional) - "NexusBloom" text logo at bottom
