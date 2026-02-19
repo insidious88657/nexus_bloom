@@ -1,6 +1,6 @@
 # Nexus Bloom
 
-A Flutter mobile application with a Node.js local server.
+AI symbiote - A Flutter mobile application with a Node.js local server.
 
 ## Project Structure
 
