@@ -1,6 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import '../widgets/pulsing_orb.dart';
+import '../widgets/bloom_orb.dart';
 import '../widgets/simple_bloom_game.dart';
 import 'journal_screen.dart';
 import 'federation_hub_screen.dart';
@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const PulsingOrb(size: 180),
+                const BloomOrb(health: 0.8, size: 180),
                 const SizedBox(height: 16),
                 const Text('Tap for insights', style: TextStyle(color: Colors.white70)),
                 const SizedBox(height: 24),
