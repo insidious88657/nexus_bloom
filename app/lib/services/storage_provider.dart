@@ -2,10 +2,13 @@ import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import '../models/bloom_models.dart';
 
 abstract class StorageProvider {
   Future<void> saveBloomData(Map<String, dynamic> data);
   Future<Map<String, dynamic>?> loadBloomData();
+  Future<void> saveBloomProfile(BloomProfile profile);
+  Future<BloomProfile?> loadBloomProfile();
   Future<void> clear();
 }
 
@@ -48,6 +51,18 @@ class LocalStorageProvider implements StorageProvider {
     final List<Map> maps = await db.query('bloom', limit: 1);
     if (maps.isEmpty) return null;
     return jsonDecode(maps.first['data'] as String) as Map<String, dynamic>;
+  }
+
+  @override
+  Future<void> saveBloomProfile(BloomProfile profile) async {
+    await saveBloomData(profile.toJson());
+  }
+
+  @override
+  Future<BloomProfile?> loadBloomProfile() async {
+    final data = await loadBloomData();
+    if (data == null) return null;
+    return BloomProfile.fromJson(data);
   }
 
   @override

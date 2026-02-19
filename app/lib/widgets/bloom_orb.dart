@@ -25,9 +25,9 @@ class _BloomOrbWidgetState extends ConsumerState<BloomOrbWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final bloom = ref.watch(bloomProvider);
+    final asyncProfile = ref.watch(bloomProvider);
     // Update energy on every build (game handles timing internally)
-    _game.updateEnergy(bloom.energy);
+    asyncProfile.whenData((profile) => _game.updateEnergy(profile.energy));
 
     return SizedBox(
       width: widget.size,

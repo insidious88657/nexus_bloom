@@ -7,6 +7,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../widgets/bloom_orb.dart';
 import '../providers/bloom_providers.dart';
 import '../services/bloom_ai.dart';
+import '../models/bloom_models.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   static const route = '/home';
@@ -32,8 +33,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         onResult: (result) async {
           if (result.finalResult) {
             final insight = await _ai.generateInsight(result.recognizedWords);
-            ref.read(bloomProvider.notifier).setInsight(insight);
-            ref.read(bloomProvider.notifier).updateEnergy(0.9);
+            final entry = JournalEntry(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              timestamp: DateTime.now(),
+              voiceText: result.recognizedWords,
+              insight: insight,
+            );
+            await ref.read(bloomProvider.notifier).addJournalEntry(entry);
           }
         },
       );
@@ -52,7 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(bloomProvider);
+    final asyncProfile = ref.watch(bloomProvider);
 
     return Scaffold(
       body: Container(
@@ -64,23 +70,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
-              Text('Your Bloom', style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.cyanAccent)),
-              const SizedBox(height: 20),
-              const BloomOrbWidget(),
-              const SizedBox(height: 30),
-              Card(
-                color: Colors.black.withValues(alpha: 0.4),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Text(state.lastInsight, style: const TextStyle(fontSize: 18, color: Colors.white70)),
+          child: asyncProfile.when(
+            data: (profile) => Column(
+              children: [
+                const SizedBox(height: 40),
+                Text(
+                  profile.name,
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.cyanAccent),
                 ),
-              ),
-              const Spacer(),
-              Text('Helped ${state.globalContributions}k humans today', style: const TextStyle(color: Colors.cyan)),
-            ],
+                const SizedBox(height: 20),
+                const BloomOrbWidget(),
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Card(
+                    color: Colors.black.withValues(alpha: 0.4),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        profile.journal.isEmpty
+                            ? 'Speak to your Bloom to weave your first insight...'
+                            : profile.journal.last.insight,
+                        style: const TextStyle(fontSize: 18, color: Colors.white70),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  'Helped ${profile.globalContributions}k humans today',
+                  style: const TextStyle(color: Colors.cyan),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (err, stack) => Center(child: Text('Error: $err', style: const TextStyle(color: Colors.red))),
           ),
         ),
       ),
