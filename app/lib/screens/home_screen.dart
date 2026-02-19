@@ -1,75 +1,104 @@
-import 'package:flame/game.dart';
+// WARP_PROMPT: HomeScreen with BloomOrb center, voice journal FAB, federation button, insight card.
+// Dark cosmic theme with soft glows. Riverpod-driven.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../widgets/bloom_orb_game.dart';
-import '../widgets/simple_bloom_game.dart';
-import '../services/storage_provider.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import '../widgets/bloom_orb.dart';
 import '../providers/bloom_providers.dart';
-import 'journal_screen.dart';
-import 'federation_hub_screen.dart';
-import 'settings_screen.dart';
+import '../services/bloom_ai.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   static const route = '/home';
-  final LinearGradient gradient;
-  const HomeScreen({super.key, required this.gradient});
+  const HomeScreen({super.key});
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  final BloomAI _ai = BloomAI();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    _ai.init();
+  }
+
+  Future<void> _startVoiceJournal() async {
+    final available = await _speech.initialize();
+    if (available) {
+      await _speech.listen(
+        onResult: (result) async {
+          if (result.finalResult) {
+            final insight = await _ai.generateInsight(result.recognizedWords);
+            ref.read(bloomProvider.notifier).setInsight(insight);
+            ref.read(bloomProvider.notifier).updateEnergy(0.9);
+          }
+        },
+      );
+    }
+  }
+
+  Future<void> _testFederation() async {
+    await _ai.federate();
+    ref.read(bloomProvider.notifier).incrementContributions();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Δ contributed to Humanity Bloom')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(bloomProvider);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('NexusBloom')),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Mesmerizing gradient backdrop
-          DecoratedBox(decoration: BoxDecoration(gradient: gradient)),
-          // Flame overlay (subtle particles)
-          GameWidget(game: SimpleBloomGame()),
-          // Content
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                BloomOrbFlame(energy: ref.watch(bloomProvider).energy, size: 180),
-                const SizedBox(height: 16),
-                const Text('Tap for insights', style: TextStyle(color: Colors.white70)),
-                const SizedBox(height: 8),
-                FutureBuilder<Map<String, dynamic>?>(
-                  future: LocalStorageProvider().loadBloomData(),
-                  builder: (context, snap) {
-                    if (snap.connectionState != ConnectionState.done) {
-                      return const SizedBox(height: 20);
-                    }
-                    final insight = snap.data != null ? (snap.data!['insight'] as String?) : null;
-                    return Text(
-                      insight ?? 'No insights yet — open Journal to weave one.',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.white70),
-                    );
-                  },
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0A1F3A), Color(0xFF1E3A5F), Color(0xFF2C5A8C)],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              Text('Your Bloom', style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.cyanAccent)),
+              const SizedBox(height: 20),
+              const BloomOrbWidget(),
+              const SizedBox(height: 30),
+              Card(
+                color: Colors.black.withValues(alpha: 0.4),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(state.lastInsight, style: const TextStyle(fontSize: 18, color: Colors.white70)),
                 ),
-                const SizedBox(height: 24),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () => Navigator.pushNamed(context, JournalScreen.route),
-                      icon: const Icon(Icons.mic), label: const Text('Journal'),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () => Navigator.pushNamed(context, FederationHubScreen.route),
-                      icon: const Icon(Icons.public), label: const Text('Federation Hub'),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () => Navigator.pushNamed(context, SettingsScreen.route),
-                      icon: const Icon(Icons.settings), label: const Text('Settings'),
-                    ),
-                  ],
-                )
-              ],
-            ),
+              ),
+              const Spacer(),
+              Text('Helped ${state.globalContributions}k humans today', style: const TextStyle(color: Colors.cyan)),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: _startVoiceJournal,
+            backgroundColor: Colors.cyanAccent,
+            tooltip: 'Speak to your Bloom',
+            child: const Icon(Icons.mic, size: 32),
+          ),
+          const SizedBox(height: 12),
+          FloatingActionButton(
+            onPressed: _testFederation,
+            backgroundColor: Colors.indigoAccent,
+            tooltip: 'Contribute to Humanity',
+            child: const Icon(Icons.public),
           ),
         ],
       ),

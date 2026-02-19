@@ -5,17 +5,17 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:nexus_bloom/main.dart';
 
 void main() {
-  testWidgets('Home shows welcome message', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Verify welcome text is present.
-    expect(find.text('Welcome to Nexus Bloom'), findsOneWidget);
-    expect(find.text('Nexus Bloom'), findsWidgets); // title in AppBar
+  testWidgets('Shows home screen', (WidgetTester tester) async {
+    await tester.pumpWidget(const ProviderScope(child: NexusBloomApp()));
+    // Pump a few frames to allow initial render (avoid pumpAndSettle due to infinite animations)
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('Your Bloom'), findsOneWidget);
   });
 }

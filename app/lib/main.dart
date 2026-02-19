@@ -36,10 +36,10 @@ class NexusBloomApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(backgroundColor: Colors.transparent, foregroundColor: Colors.white, centerTitle: true, elevation: 0),
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: OnboardingScreen.route,
+      initialRoute: HomeScreen.route,
       routes: {
         OnboardingScreen.route: (_) => const OnboardingScreen(gradient: gradient),
-        HomeScreen.route: (_) => const HomeScreen(gradient: gradient),
+        HomeScreen.route: (_) => const HomeScreen(),
         JournalScreen.route: (_) => const JournalScreen(),
         FederationHubScreen.route: (_) => const FederationHubScreen(),
         SettingsScreen.route: (_) => const SettingsScreen(),
