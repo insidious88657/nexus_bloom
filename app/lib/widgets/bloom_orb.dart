@@ -64,16 +64,15 @@ class _BloomGame extends FlameGame {
     add(_core);
 
     // Gentle pulse that scales with health
-    final scaleMin = 0.92 + 0.02 * health;
     final scaleMax = 1.06 + 0.06 * health;
     _core.add(ScaleEffect.to(
       Vector2.all(scaleMax),
-      EffectController(duration: 2.4, reverseDuration: 2.4, infinite: true, curve: Curves.easeInOut),
-      onComplete: () {},
-    ));
-    _core.add(ScaleEffect.to(
-      Vector2.all(scaleMin),
-      EffectController(startDelay: 2.4, duration: 2.4, reverseDuration: 0, infinite: true, curve: Curves.easeInOut),
+      EffectController(
+        duration: 2.4,
+        reverseDuration: 2.4,
+        infinite: true,
+        curve: Curves.easeInOut,
+      ),
     ));
   }
 }
